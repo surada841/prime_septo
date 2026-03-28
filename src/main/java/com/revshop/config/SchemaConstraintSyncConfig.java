@@ -6,8 +6,8 @@ import com.revshop.entity.PaymentStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.context.event.EventListener;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -24,24 +24,22 @@ public class SchemaConstraintSyncConfig {
 
     @EventListener(ApplicationReadyEvent.class)
     public void syncEnumCheckConstraints() {
-        syncEnumConstraint(
-                "orders",
-                "status",
-                "chk_orders_status",
-                enumValues(OrderStatus.values())
-        );
-        syncEnumConstraint(
-                "notifications",
-                "notification_type",
-                "chk_notifications_notification_type",
-                enumValues(NotificationType.values())
-        );
-        syncEnumConstraint(
-                "payments",
-                "status",
-                "chk_payments_status",
-                enumValues(PaymentStatus.values())
-        );
+        syncSafely("orders", "status", "chk_orders_status", enumValues(OrderStatus.values()));
+        syncSafely("notifications", "notification_type", "chk_notifications_notification_type", enumValues(NotificationType.values()));
+        syncSafely("payments", "status", "chk_payments_status", enumValues(PaymentStatus.values()));
+    }
+
+    private void syncSafely(
+            String tableName,
+            String columnName,
+            String targetConstraintName,
+            List<String> allowedValues
+    ) {
+        try {
+            syncEnumConstraint(tableName, columnName, targetConstraintName, allowedValues);
+        } catch (Exception e) {
+            log.error("Failed to sync enum check constraint for {}.{}: {}", tableName, columnName, e.getMessage(), e);
+        }
     }
 
     private void syncEnumConstraint(
@@ -50,28 +48,35 @@ public class SchemaConstraintSyncConfig {
             String targetConstraintName,
             List<String> allowedValues
     ) {
-        String tableUpper = tableName.toUpperCase(Locale.ROOT);
-        String matchPattern = "%" + columnName.toLowerCase(Locale.ROOT) + " in (%";
+        if (!tableExists(tableName)) {
+            log.warn("Table '{}' does not exist. Skipping constraint sync.", tableName);
+            return;
+        }
 
         List<String> existingConstraints = jdbcTemplate.queryForList(
                 """
-                SELECT constraint_name
-                FROM user_constraints
-                WHERE table_name = ?
-                  AND constraint_type = 'C'
-                  AND LOWER(search_condition_vc) LIKE ?
+                SELECT tc.CONSTRAINT_NAME
+                FROM information_schema.TABLE_CONSTRAINTS tc
+                JOIN information_schema.CHECK_CONSTRAINTS cc
+                  ON tc.CONSTRAINT_SCHEMA = cc.CONSTRAINT_SCHEMA
+                 AND tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME
+                WHERE tc.TABLE_SCHEMA = DATABASE()
+                  AND tc.TABLE_NAME = ?
+                  AND tc.CONSTRAINT_TYPE = 'CHECK'
+                  AND LOWER(cc.CHECK_CLAUSE) LIKE ?
                 """,
                 String.class,
-                tableUpper,
-                matchPattern
+                tableName,
+                "%" + columnName.toLowerCase(Locale.ROOT) + "%in%"
         );
 
         for (String constraintName : existingConstraints) {
-            jdbcTemplate.execute("ALTER TABLE " + tableName + " DROP CONSTRAINT " + constraintName);
+            jdbcTemplate.execute("ALTER TABLE " + tableName + " DROP CHECK " + constraintName);
+            log.info("Dropped existing check constraint '{}' on table '{}'", constraintName, tableName);
         }
 
         String enumInClause = allowedValues.stream()
-                .map(value -> "'" + value + "'")
+                .map(value -> "'" + value.replace("'", "''") + "'")
                 .collect(Collectors.joining(","));
 
         jdbcTemplate.execute(
@@ -81,6 +86,20 @@ public class SchemaConstraintSyncConfig {
         );
 
         log.info("Synced enum check constraint for {}.{} with {} values", tableName, columnName, allowedValues.size());
+    }
+
+    private boolean tableExists(String tableName) {
+        Integer count = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*)
+                FROM information_schema.TABLES
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = ?
+                """,
+                Integer.class,
+                tableName
+        );
+        return count != null && count > 0;
     }
 
     private List<String> enumValues(Enum<?>[] values) {

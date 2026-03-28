@@ -1,5 +1,0 @@
-# Created at 2026-03-27T21:08:01.100
-Boot Manifest-JAR contains absolute paths in classpath 'S:\FULLstack\Internship\NRIT-demo\razor-pay-integration\Shop_Insta_Stripe_Integrated\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-
