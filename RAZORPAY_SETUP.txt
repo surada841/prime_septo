@@ -1,0 +1,25 @@
+RevShop Razorpay migration notes
+
+1. Add your Razorpay test or live keys in src/main/resources/application.properties or as environment variables:
+   RAZORPAY_KEY_ID
+   RAZORPAY_KEY_SECRET
+
+2. Main payment flow changed from Stripe redirect checkout to Razorpay Standard Checkout popup.
+
+3. Files updated only for payment integration:
+   - pom.xml
+   - src/main/resources/application.properties
+   - src/main/java/com/revshop/config/RazorpayProperties.java
+   - src/main/java/com/revshop/controller/PaymentController.java
+   - src/main/java/com/revshop/service/PaymentService.java
+   - src/main/java/com/revshop/service/impl/PaymentServiceImpl.java
+   - src/main/java/com/revshop/dto/payment/ConfirmPaymentRequest.java
+   - src/main/java/com/revshop/dto/payment/PaymentResponse.java
+   - src/main/resources/static/js/pages/cart.js
+   - src/main/resources/static/js/pages/payment-success.js
+   - src/main/resources/templates/buyer/cart.html
+   - src/main/resources/templates/buyer/payment-success.html
+   - src/main/resources/templates/buyer/payment-cancel.html
+
+4. Success verification is done using Razorpay signature verification and payment fetch API.
+5. Configure auto-capture in Razorpay Dashboard for smoother confirmed payment status.

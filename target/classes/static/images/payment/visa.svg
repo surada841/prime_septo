@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="36" viewBox="0 0 120 36" role="img" aria-label="Visa">
+  <rect width="120" height="36" rx="8" fill="#ffffff"/>
+  <rect x="0.5" y="0.5" width="119" height="35" rx="7.5" fill="none" stroke="#dbe4ff"/>
+  <text x="60" y="24" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="18" fill="#1a1f71">VISA</text>
+</svg>

@@ -1,0 +1,46 @@
+RevShop Stripe INR Integration
+
+What was added
+- Stripe hosted checkout for CREDIT_CARD and DEBIT_CARD orders
+- INR as default Stripe currency
+- Payment success page: /buyer/payment-success
+- Payment cancel page: /buyer/payment-cancel
+- Cart page redirects to Stripe when card payment is selected
+- COD flow remains available
+
+Environment variables to set
+- STRIPE_SECRET_KEY=sk_test_xxx or sk_live_xxx
+- STRIPE_WEBHOOK_SECRET=whsec_xxx   (optional in this build)
+- STRIPE_SUCCESS_URL=http://localhost:8080/buyer/payment-success
+- STRIPE_CANCEL_URL=http://localhost:8080/buyer/payment-cancel
+
+Main files changed
+- pom.xml
+- src/main/resources/application.properties
+- src/main/java/com/revshop/config/StripeProperties.java
+- src/main/java/com/revshop/controller/PaymentController.java
+- src/main/java/com/revshop/controller/WebPageController.java
+- src/main/java/com/revshop/service/PaymentService.java
+- src/main/java/com/revshop/service/impl/PaymentServiceImpl.java
+- src/main/java/com/revshop/dto/payment/ProcessPaymentRequest.java
+- src/main/java/com/revshop/dto/payment/PaymentResponse.java
+- src/main/java/com/revshop/entity/Payment.java
+- src/main/resources/templates/buyer/cart.html
+- src/main/resources/static/js/pages/cart.js
+- src/main/resources/templates/buyer/payment-success.html
+- src/main/resources/templates/buyer/payment-cancel.html
+- src/main/resources/static/js/pages/payment-success.js
+
+Flow
+1. Buyer adds items to cart
+2. Buyer opens cart and chooses Credit Card or Debit Card
+3. Order is created through /api/orders/checkout
+4. Payment session is created through /api/payments/process
+5. Browser redirects to Stripe hosted checkout page
+6. After payment, Stripe redirects back to /buyer/payment-success
+7. Success page calls /api/payments/confirm to verify session and mark payment SUCCESS
+
+Notes
+- This app currently pays into the Stripe account whose secret key is configured on the server.
+- For a real marketplace split payout model, you would need Stripe Connect, which is not added here.
+- I could not run a full Maven build in this environment because external Maven downloads are blocked here.

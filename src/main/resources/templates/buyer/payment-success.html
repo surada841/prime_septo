@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevShop | Payment Success</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/revshop-theme.css" rel="stylesheet">
+</head>
+<body class="market-body">
+<div id="app-shell"></div>
+<main class="container page-section pb-5">
+    <div class="market-card p-4 p-md-5 text-center mx-auto" style="max-width: 720px;">
+        <div class="display-6 mb-3">Payment Verification</div>
+        <p class="market-muted" id="paymentSuccessMessage">Checking your Razorpay payment status...</p>
+        <div id="paymentSuccessDetails" class="small mt-3"></div>
+        <div class="mt-4 d-flex gap-2 justify-content-center flex-wrap">
+            <a href="/buyer/orders" class="btn btn-brand market-btn">Go to Orders</a>
+            <a href="/buyer/cart" class="btn btn-outline-secondary market-btn">Back to Cart</a>
+        </div>
+    </div>
+</main>
+<script src="/js/app-core.js"></script>
+<script src="/js/pages/payment-success.js"></script>
+</body>
+</html>

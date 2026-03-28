@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevShop | My Orders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/revshop-theme.css" rel="stylesheet">
+</head>
+<body class="market-body">
+<div id="app-shell"></div>
+
+<main class="container pb-5 page-section">
+    <div class="market-card p-3 p-md-4">
+        <h4 class="card-title mb-3">Order History</h4>
+        <p class="market-muted small mb-3">Manage deliveries, returns, exchanges, and product reviews with guided in-page forms.</p>
+        <div id="ordersList"></div>
+        <div id="emptyOrdersState" class="empty-state d-none mt-3">
+            <h6 class="mb-1">No orders placed yet</h6>
+            <p class="market-muted mb-0">Checkout from cart to create your first order.</p>
+        </div>
+
+        <section id="orderActionComposer" class="market-card flat p-3 mt-4 d-none">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                <div>
+                    <h6 id="orderActionTitle" class="mb-1">Update Order</h6>
+                    <p id="orderActionSubtitle" class="market-muted small mb-0"></p>
+                </div>
+                <button id="orderActionCloseBtn" type="button" class="btn btn-sm btn-outline-secondary market-btn">Close</button>
+            </div>
+            <form id="orderActionForm" class="vstack gap-3">
+                <div>
+                    <label for="orderActionReasonInput" class="form-label mb-1">Reason (optional)</label>
+                    <textarea id="orderActionReasonInput" class="form-control market-textarea" rows="3" maxlength="500"
+                              placeholder="Add clear reason for this request"></textarea>
+                </div>
+                <div id="exchangeProductField" class="d-none">
+                    <label for="exchangeProductIdInput" class="form-label mb-1">Exchange Product ID (optional)</label>
+                    <input id="exchangeProductIdInput" type="number" min="1" step="1" class="form-control market-input"
+                           placeholder="Enter target product ID for exchange">
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button id="orderActionCancelBtn" type="button" class="btn btn-outline-secondary market-btn">Cancel</button>
+                    <button id="orderActionSubmitBtn" type="submit" class="btn btn-brand market-btn">Submit Request</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="reviewComposer" class="market-card flat p-3 mt-4 d-none">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                <div>
+                    <h6 id="reviewComposerTitle" class="mb-1">Add Product Review</h6>
+                    <p id="reviewComposerSubtitle" class="market-muted small mb-0"></p>
+                </div>
+                <button id="reviewComposerCloseBtn" type="button" class="btn btn-sm btn-outline-secondary market-btn">Close</button>
+            </div>
+            <form id="reviewComposerForm" class="vstack gap-3">
+                <div>
+                    <label for="reviewRatingInput" class="form-label mb-1">Rating</label>
+                    <select id="reviewRatingInput" class="form-select market-select" required>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Very Good</option>
+                        <option value="3">3 - Good</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="1">1 - Poor</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="reviewTitleInput" class="form-label mb-1">Review Title (optional)</label>
+                    <input id="reviewTitleInput" type="text" class="form-control market-input" maxlength="150"
+                           placeholder="Short summary of your experience">
+                </div>
+                <div>
+                    <label for="reviewCommentInput" class="form-label mb-1">Review Comment (optional)</label>
+                    <textarea id="reviewCommentInput" class="form-control market-textarea" rows="4" maxlength="2000"
+                              placeholder="Share quality, fit, delivery, and usage feedback"></textarea>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button id="reviewComposerCancelBtn" type="button" class="btn btn-outline-secondary market-btn">Cancel</button>
+                    <button id="reviewComposerSubmitBtn" type="submit" class="btn btn-brand market-btn">Save Review</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+
+<script src="/js/app-core.js"></script>
+<script src="/js/pages/orders.js"></script>
+</body>
+</html>
