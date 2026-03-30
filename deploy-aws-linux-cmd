@@ -1,0 +1,37 @@
+mysql login in mobextern using linux
+===========================================
+
+step1:  mysql -h payment-integration-dev-db.cliq0usmgng4.ap-south-1.rds.amazonaws.com -u admin -p
+step2:  Enter password: Admin#1234
+step3:  use validations;
+step4:  show tables;
+
+
+
+Build jar file in eclipse and be aware of path of jar file which is generated in target folder
+==============================================================================================
+step1:  Right click on project -> Run as -> Maven build
+step2:  In Goals field, enter:clean package  //check the skip tests checkbox if you want to skip the test cases execution(because project deploying aws)
+
+copy the jar file from local to ec2 machine using scp command(home window)
+==========================================================================
+step1:  scp -i "/drives/S/FULLstack/Internship/NRIT-Hackthon/aws-pem/payment-Integration-key.pem" "/drives/S/FULLstack/Internship/NRIT-Hackthon/stripe-payment-integration-system/target/revshop-0.0.1-SNAPSHOT.jar" ec2-user@13.233.212.72:/home/ec2-user/
+revshop-0.0.1-SNAPSHOT.jar                                 //pem file of aws very important for scp command to work
+
+
+
+How to stop current running jar and re run the updated jar in linux(ec2 machine )
+======================================================================
+step1:  ps -ef | grep java                     //to find the process id of the currently running jar
+step2:  pkill -f revshop                       //stop the current running jar
+step3:  rm -f revshop-0.0.1-SNAPSHOT.jar       //remove the old jar file
+step4:  ls -l                                  //to check the jar file is removed or not
+step5:  java -jar revshop-0.0.1-SNAPSHOT.jar     //to run the updated jar file in foreground and check if it is running properly or not
+step6:  Ctrl + C                              //to stop the jar file running in foreground
+step7:  nohup java -jar revshop-0.0.1-SNAPSHOT.jar > app.log 2>&1 &        //to run the updated jar file in background and redirect the output to app.log file
+step8:  tail -f app.log                       //to check the logs of the running jar file
+step9:  tail -100 app.log
+
+
+//to paste in mobaxterm terminal:shift + insert
+
