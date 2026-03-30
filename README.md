@@ -1,4 +1,4 @@
-# 🌐 https://www.primesecto.shop
+# 🌐 https://www.primesepto.shop
 
 ## 🚀 End-to-End Application Development Stack
 
